@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diyet Takip Sistemi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;800&display=swap');
+
+        :root {
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --success: #4CAF50;
+            --warning: #FFB800;
+            --danger: #E74C3C;
+            --dark: #2C3E50;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideDown 0.8s ease;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '🥗';
+            position: absolute;
+            right: -60px;
+            top: 0;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.8s ease 0.2s both;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .food-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .food-group {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease both;
+            animation-delay: calc(var(--delay) * 0.1s);
+        }
+
+        .food-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--group-color) 0%, transparent 100%);
+        }
+
+        .food-group:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .group-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+
+        .group-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .group-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            background: var(--warning);
+            transition: all 0.3s ease;
+        }
+
+        .group-status.complete {
+            background: var(--success);
+        }
+
+        .group-status.exceed {
+            background: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        .portion-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+        }
+
+        .portion-text {
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .portion-count {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--group-color) 0%, var(--group-color-light) 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .food-items {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .food-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .food-items::-webkit-scrollbar-track {
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .food-items::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .food-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .food-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transform: translateX(5px);
+        }
+
+        .food-item.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 3px solid var(--success);
+        }
+
+        .food-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .food-name {
+            flex: 1;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .food-amount {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .reset-button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: block;
+            margin: 30px auto;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(200%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .food-groups {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>DİYET TAKİP SİSTEMİ</h1>
+            <p class="subtitle">Günlük besin takibinizi kolaylaştırın</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value" id="totalPortions">0</span>
+                    <span class="stat-label">Tüketilen Porsiyon</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="completedGroups">0</span>
+                    <span class="stat-label">Tamamlanan Grup</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="remainingPortions">0</span>
+                    <span class="stat-label">Kalan Porsiyon</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="progressPercent">0%</span>
+                    <span class="stat-label">Günlük İlerleme</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="food-groups" id="foodGroups">
+            <!-- Food groups will be dynamically inserted here -->
+        </div>
+
+        <button class="reset-button" onclick="resetDaily()">🔄 Günlük Sıfırla</button>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Besin grupları ve hedef porsiyonlar
+        const foodGroups = {
+            'SÜT': {
+                target: 3,
+                icon: '🥛',
+                color: '#3498db',
+                colorLight: '#5dade2',
+                items: [
+                    { name: 'Süt, yoğurt (tam yağlı)', amount: '1 küçük su bardağı (160 gr)' },
+                    { name: 'Süt, yoğurt (yarım yağlı)', amount: '1 su bardağı (200 gr)' },
+                    { name: 'Süt, yoğurt (yağsız)', amount: '1,5 su bardağı (300 gr)' },
+                    { name: 'Ayran', amount: '2 su bardağı (400 gr)' },
+                    { name: 'Kefir', amount: '1 küçük bardağı (160 gr)' }
+                ]
+            },
+            'ET': {
+                target: 4,
+                icon: '🥩',
+                color: '#e74c3c',
+                colorLight: '#ec7063',
+                items: [
+                    { name: 'Köfte', amount: '1 adet (30 gr)' },
+                    { name: 'Pirzola (kemiksiz)', amount: '1 adet (30 gr)' },
+                    { name: 'Kıyma (pişmiş)', amount: '1 köfte kadar (30 gr)' },
+                    { name: 'Kuşbaşı (pişmiş)', amount: '3-4 parça (30 gr)' },
+                    { name: 'Biftek (pişmiş)', amount: '1 orta büyüklükte (30 gr)' },
+                    { name: 'Balık (pişmiş)', amount: '1 köfte kadar (45 gr)' },
+                    { name: 'Tavuk (pişmiş)', amount: '1 köfte kadar (45 gr)' },
+                    { name: 'Beyaz peynir', amount: '2 parmak kadar (30 gr)' },
+                    { name: 'Kaşar peynir', amount: '½ parmak kadar (20 gr)' },
+                    { name: 'Keçi peyniri', amount: '2 parmak kadar (30 gr)' },
+                    { name: 'Ezine peyniri', amount: '2 parmak kadar (30 gr)' },
+                    { name: 'Süzme peynir', amount: '2 parmak kadar (30 gr)' },
+                    { name: 'Dil peyniri', amount: '2 parmak kadar (30 gr)' },
+                    { name: 'Hellim peyniri', amount: '2 dilim (30 gr)' },
+                    { name: 'Örgü peyniri', amount: '2 adet (30 gr)' },
+                    { name: 'Çeçil peyniri', amount: '2 parmak kadar (30 gr)' },
+                    { name: 'Cheddar peyniri', amount: '1 parmak kadar (20 gr)' },
+                    { name: 'Gravyer peyniri', amount: '1 parmak kadar (20 gr)' },
+                    { name: 'Krem peyniri', amount: '1 yemek kaşığı (20 gr)' },
+                    { name: 'Lor veya çökelek', amount: '5-6 yemek kaşığı (30 gr)' },
+                    { name: 'Sosis', amount: '1 küçük adet (30 gr)' },
+                    { name: 'Salam', amount: '2 dilim (30 gr)' },
+                    { name: 'Yumurta', amount: '1 adet (50 gr)' },
+                    { name: 'Yumurta (bıldırcın)', amount: '5 adet (50 gr)' },
+                    { name: 'Levrek', amount: '1/5 küçük boy (55 gr)' },
+                    { name: 'Alabalık', amount: '1/6 orta boy (45 gr)' },
+                    { name: 'Çipura', amount: '¼ küçük boy (60 gr)' },
+                    { name: 'Somon', amount: '2 parmak boyutunda (40 gr)' },
+                    { name: 'İstavrit', amount: '4 küçük boy (60 gr)' },
+                    { name: 'Mezgit', amount: '3 orta boy (60 gr)' },
+                    { name: 'Lüfer', amount: '3 yarım parmak (40 gr)' },
+                    { name: 'Sazan', amount: '2 parmak boyutunda (55 gr)' },
+                    { name: 'Hamsi', amount: '5 orta boy (45 gr)' },
+                    { name: 'Ton balık', amount: '½ paket (40 gr)' }
+                ]
+            },
+            'EKMEK': {
+                target: 3,
+                icon: '🍞',
+                color: '#f39c12',
+                colorLight: '#f5b041',
+                items: [
+                    { name: 'Ekmek', amount: '1 dilim (25 gr)' },
+                    { name: 'Tuzlu Bisküvi', amount: '2 adet (25 gr)' },
+                    { name: 'Galeta', amount: '2-3 adet (25 gr)' },
+                    { name: 'Hamburger ekmeği (küçük)', amount: '½ adet (25 gr)' },
+                    { name: 'Sandviç ekmeği (küçük)', amount: '1/3 adet (25 gr)' },
+                    { name: 'Peksimet', amount: '2 adet (25 gr)' },
+                    { name: 'Buğday Unu (Çorbada)', amount: '1 kase (15 gr)' },
+                    { name: 'Tarhana (Çorbada)', amount: '1 kase (15 gr)' },
+                    { name: 'Şehriye (Çorbada)', amount: '1 kase (15 gr)' },
+                    { name: 'Pirinç (Çorbada)', amount: '1 kase (15 gr)' },
+                    { name: 'Mercimek (Çorbada)', amount: '1 kase (15 gr)' },
+                    { name: 'Yulaf ezmesi', amount: '2 yemek kaşığı (25 gr)' },
+                    { name: 'Pirinç pilavı', amount: '2 yemek kaşığı (15 gr)' },
+                    { name: 'Bulgur pilavı', amount: '2 yemek kaşığı (15 gr)' },
+                    { name: 'Makarna', amount: '2 yemek kaşığı (15 gr)' },
+                    { name: 'Kuskus', amount: '2 yemek kaşığı (15 gr)' },
+                    { name: 'Erişte', amount: '2 yemek kaşığı (15 gr)' },
+                    { name: 'Patates (soğumuş)', amount: '1 küçük boy (90 gr)' },
+                    { name: 'Kestane', amount: '2 orta boy (30 gr)' },
+                    { name: 'Patlamış mısır (yağsız)', amount: '1 su bardağı (20 gr)' },
+                    { name: 'Beyaz/Sarı Leblebi', amount: '1/2 çay bardağı (25 gr)' },
+                    { name: 'Etimek', amount: '2 dilim (18 gr)' },
+                    { name: 'Grisini', amount: '3 adet (20 gr)' },
+                    { name: 'Mısır (Taneli)', amount: '2 yemek kaşığı (20 gr)' },
+                    { name: 'Mısır (Koçan)', amount: '1 küçük boy (90 gr)' },
+                    { name: 'Simit (Susamsız)', amount: '1/4 adet (30 gr)' },
+                    { name: 'Lavaş', amount: '1 küçük boy (30 gr)' },
+                    { name: 'Bazlama', amount: '¼ adet (15 gr)' },
+                    { name: 'İrmik', amount: '2 yemek kaşığı (20 gr)' },
+                    { name: 'Tahıl/mısır gevreği (sade)', amount: '3 yemek kaşığı (20 gr)' },
+                    { name: 'Yufka Böreği', amount: '2 parmak kadar (45 gr)' },
+                    { name: 'Bezelye', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Kuru soğan', amount: '2 orta boy çiğ (75 gr)' },
+                    { name: 'Havuç', amount: '1 orta boy pişmiş (100 gr)' },
+                    { name: 'Nohut (çiğ)', amount: '3 yemek kaşığı (25 gr)' },
+                    { name: 'Kuru fasulye (çiğ)', amount: '3 yemek kaşığı (25 gr)' },
+                    { name: 'Barbunya (çiğ)', amount: '3 yemek kaşığı (25 gr)' },
+                    { name: 'Mercimek (yeşil/kırmızı)', amount: '3 yemek kaşığı (25 gr)' },
+                    { name: 'Kuru bakla (çiğ)', amount: '3 yemek kaşığı (25 gr)' },
+                    { name: 'Kuru börülce (çiğ)', amount: '3 yemek kaşığı (25 gr)' }
+                ]
+            },
+            'SEBZE': {
+                target: 'SINIRSIZ',
+                icon: '🥬',
+                color: '#27ae60',
+                colorLight: '#52be80',
+                items: [
+                    { name: 'Domates', amount: '1 küçük boy (100 gr)' },
+                    { name: 'Domates suyu', amount: '½ su bardağı (100 gr)' },
+                    { name: 'Çarliston biber', amount: '4 orta boy (100 gr)' },
+                    { name: 'Yeşil sivri biber', amount: '10 orta boy (100 gr)' },
+                    { name: 'Kıvırcık Salata', amount: '15 yaprak (100 gr)' },
+                    { name: 'Marul', amount: '5-6 yaprak (100 gr)' },
+                    { name: 'Salatalık', amount: '2 küçük boy (100 gr)' },
+                    { name: 'Kırmızı turp', amount: '5 orta boy (100 gr)' },
+                    { name: 'Maydanoz', amount: '1 orta demet (75 gr)' },
+                    { name: 'Yeşil soğan', amount: '3-4 orta boy (75 gr)' },
+                    { name: 'Kırmızı lahana', amount: '1/8 orta boy (100 gr)' },
+                    { name: 'Kereviz', amount: '1 küçük boy (100 gr)' },
+                    { name: 'Lahana', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Karnabahar', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Taze kabak', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Patlıcan', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Pazı', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Ebegümeci', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Bamya', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Taze fasulye', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Semizotu', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Ispanak', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Havuç', amount: '1 orta boy çiğ (100 gr)' },
+                    { name: 'Havuç suyu', amount: '½ su bardağı (120 gr)' },
+                    { name: 'Şalgam', amount: '1 orta boy çiğ (150 gr)' },
+                    { name: 'Pırasa', amount: '5 yemek kaşığı pişmiş (150 gr)' },
+                    { name: 'Bakla', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Enginar', amount: '4 yemek kaşığı pişmiş (100 gr)' },
+                    { name: 'Bal kabağı', amount: '3 dilim (100 gr)' }
+                ]
+            },
+            'MEYVE': {
+                target: 3,
+                icon: '🍎',
+                color: '#9b59b6',
+                colorLight: '#bb8fce',
+                items: [
+                    { name: 'Elma', amount: '1 küçük boy (100 gr)' },
+                    { name: 'Kayısı', amount: '3 adet (100 gr)' },
+                    { name: 'Muz', amount: '1 küçük boy (50 gr)' },
+                    { name: 'Taze incir', amount: '1 adet (80 gr)' },
+                    { name: 'Kiraz', amount: '12 adet (75 gr)' },
+                    { name: 'Vişne', amount: '14 adet (80 gr)' },
+                    { name: 'Greyfurt', amount: '1 küçük boy (125 gr)' },
+                    { name: 'Turunç', amount: '1 orta boy (100 gr)' },
+                    { name: 'Portakal', amount: '1 orta boy (100 gr)' },
+                    { name: 'Limon', amount: '½ orta boy (50 gr)' },
+                    { name: 'Mango', amount: '1/3 küçük boy (120 gr)' },
+                    { name: 'Mandalina', amount: '1 büyük boy (100 gr)' },
+                    { name: 'Üzüm', amount: '15 tane (80 gr)' },
+                    { name: 'Yaban mersini', amount: '1 su bardağı (150 gr)' },
+                    { name: 'Yeni dünya', amount: '6 adet (125 gr)' },
+                    { name: 'Erik (yeşil)', amount: '7 adet (100 gr)' },
+                    { name: 'Erik (mürdüm)', amount: '3 orta boy (100 gr)' },
+                    { name: 'Karpuz', amount: '3-4 üçgen dilim (150-200 gr)' },
+                    { name: 'Çilek', amount: '12 adet (175 gr)' },
+                    { name: 'Şeftali', amount: '1 orta boy (100 gr)' },
+                    { name: 'Böğürtlen/ahududu', amount: '1 çay bardağı (100 gr)' },
+                    { name: 'Dut', amount: '¾ su bardağı (115 gr)' },
+                    { name: 'Armut', amount: '1 orta boy (100 gr)' },
+                    { name: 'Ayva', amount: '¼ orta boy (80 gr)' },
+                    { name: 'Nar', amount: '½ küçük boy (80 gr)' },
+                    { name: 'Kavun', amount: '1/8 orta boy (150 gr)' },
+                    { name: 'Kuru incir', amount: '1 adet (20 gr)' },
+                    { name: 'Kuru kayısı', amount: '3 adet (20 gr)' },
+                    { name: 'Kuru erik', amount: '4 adet (20 gr)' },
+                    { name: 'Hurma', amount: '3 adet (15 gr)' },
+                    { name: 'Portakal suyu', amount: '1 çay bardağı (100 gr)' },
+                    { name: 'Greyfurt suyu', amount: '1 çay bardağı (100 gr)' },
+                    { name: 'Elma suyu', amount: '1 çay bardağı (100 gr)' },
+                    { name: 'Nar suyu', amount: '1 çay bardağı (100 gr)' },
+                    { name: 'Üzüm suyu', amount: '¼ su bardağı (60 gr)' },
+                    { name: 'Vişne suyu', amount: '1/3 su bardağı (80 gr)' }
+                ]
+            },
+            'YAĞ': {
+                target: 3,
+                icon: '🫒',
+                color: '#e67e22',
+                colorLight: '#eb984e',
+                items: [
+                    { name: 'Zeytin yağı', amount: '1 tatlı kaşığı (5 gr)' },
+                    { name: 'Zeytin', amount: '5 adet (20 gr)' },
+                    { name: 'Çiğ Fındık', amount: '8 adet (8 gr)' },
+                    { name: 'Çiğ Badem', amount: '10 adet (8 gr)' },
+                    { name: 'Ceviz', amount: '2 adet (8 gr)' },
+                    { name: 'Bitkisel sıvı yağ', amount: '1 tatlı kaşığı (5 gr)' },
+                    { name: 'Tereyağı', amount: '1 tatlı kaşığı (5 gr)' },
+                    { name: 'Avokado', amount: '¼ orta boy (35-40 gr)' },
+                    { name: 'Kabak Çekirdeği', amount: '1 yemek kaşığı (10 gr)' },
+                    { name: 'Ay Çekirdeği', amount: '1 yemek kaşığı (10 gr)' },
+                    { name: 'Kaju fıstığı', amount: '7 orta boy (10-20 gr)' },
+                    { name: 'Yer fıstığı', amount: '13 orta boy (10-20 gr)' },
+                    { name: 'Antep fıstığı', amount: '12-13 orta boy (10-20 gr)' }
+                ]
+            },
+            'ŞEKER': {
+                target: 1,
+                icon: '🍯',
+                color: '#ff6b9d',
+                colorLight: '#ff8fab',
+                items: [
+                    { name: 'Kesme Şeker', amount: '3 adet (10 gr)' },
+                    { name: 'Toz şeker', amount: '1 yemek kaşığı silme (10 gr)' },
+                    { name: 'Bal', amount: '1 tatlı kaşığı (10 gr)' },
+                    { name: 'Reçel', amount: '1 tatlı kaşığı (10 gr)' },
+                    { name: 'Marmelat', amount: '1 tatlı kaşığı (10 gr)' },
+                    { name: 'Üzüm pekmezi', amount: '1 tatlı kaşığı (10 gr)' },
+                    { name: 'Çikolata', amount: '2 küçük kare (10 gr)' },
+                    { name: 'Beyaz çikolata', amount: '1 kare (5 gr)' },
+                    { name: 'Sade dondurma', amount: '1 top (20 gr)' },
+                    { name: 'Tahin helvası', amount: '2 parmak kadar (8 gr)' }
+                ]
+            }
+        };
+
+        // Kullanıcı verileri (localStorage'da saklanacak)
+        let userData = {
+            consumed: {}
+        };
+
+        // Sayfa yüklendiğinde verileri yükle
+        window.onload = function () {
+            loadData();
+            renderFoodGroups();
+            updateStats();
+        };
+
+        // Besin gruplarını render et
+        function renderFoodGroups() {
+            const container = document.getElementById('foodGroups');
+            container.innerHTML = '';
+
+            let delay = 0;
+            for (const [groupName, group] of Object.entries(foodGroups)) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'food-group';
+                groupDiv.style.setProperty('--delay', delay);
+                groupDiv.style.setProperty('--group-color', group.color);
+                groupDiv.style.setProperty('--group-color-light', group.colorLight);
+
+                const consumed = getConsumedCount(groupName);
+                const target = group.target === 'SINIRSIZ' ? '∞' : group.target;
+                const statusClass = getStatusClass(consumed, group.target);
+                const statusText = getStatusText(consumed, group.target);
+                const progressWidth = getProgressWidth(consumed, group.target);
+
+                groupDiv.innerHTML = `
+                    <div class="group-header">
+                        <span class="group-icon">${group.icon}</span>
+                        <span class="group-title">${groupName} GRUBU</span>
+                        <span class="group-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="portion-info">
+                        <span class="portion-text">Hedef Porsiyon</span>
+                        <span class="portion-count">${consumed} / ${target}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressWidth}%"></div>
+                    </div>
+                    <div class="food-items">
+                        ${group.items.map((item, index) => `
+                            <div class="food-item ${isItemSelected(groupName, index) ? 'selected' : ''}">
+                                <input type="checkbox" 
+                                    class="food-checkbox" 
+                                    ${isItemSelected(groupName, index) ? 'checked' : ''}
+                                    onchange="toggleFood('${groupName}', ${index})">
+                                <span class="food-name">${item.name}</span>
+                                <span class="food-amount">${item.amount}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                container.appendChild(groupDiv);
+                delay++;
+            }
+        }
+
+        // Besin seçimini değiştir
+        function toggleFood(groupName, itemIndex) {
+            if (!userData.consumed[groupName]) {
+                userData.consumed[groupName] = [];
+            }
+
+            const index = userData.consumed[groupName].indexOf(itemIndex);
+            if (index > -1) {
+                userData.consumed[groupName].splice(index, 1);
+            } else {
+                const group = foodGroups[groupName];
+                const consumed = getConsumedCount(groupName);
+
+                // SEBZE grubu sınırsız, diğerleri için kontrol et
+                if (group.target !== 'SINIRSIZ' && consumed >= group.target) {
+                    showNotification(`${groupName} grubunda hedef porsiyonu doldurdunuz!`, 'warning');
+                }
+
+                userData.consumed[groupName].push(itemIndex);
+            }
+
+            saveData();
+            renderFoodGroups();
+            updateStats();
+
+            // Grup tamamlandı mı kontrol et
+            const newConsumed = getConsumedCount(groupName);
+            const group = foodGroups[groupName];
+            if (group.target !== 'SINIRSIZ' && newConsumed === group.target) {
+                showNotification(`Tebrikler! ${groupName} grubunu tamamladınız! 🎉`, 'success');
+            }
+        }
+
+        // Tüketilen porsiyon sayısını getir
+        function getConsumedCount(groupName) {
+            return userData.consumed[groupName] ? userData.consumed[groupName].length : 0;
+        }
+
+        // Seçili mi kontrol et
+        function isItemSelected(groupName, itemIndex) {
+            return userData.consumed[groupName] && userData.consumed[groupName].includes(itemIndex);
+        }
+
+        // Durum sınıfını getir
+        function getStatusClass(consumed, target) {
+            if (target === 'SINIRSIZ') return '';
+            if (consumed === 0) return '';
+            if (consumed < target) return '';
+            if (consumed === target) return 'complete';
+            return 'exceed';
+        }
+
+        // Durum metnini getir
+        function getStatusText(consumed, target) {
+            if (target === 'SINIRSIZ') return 'Sınırsız';
+            if (consumed === 0) return 'Başlanmadı';
+            if (consumed < target) return 'Devam Ediyor';
+            if (consumed === target) return 'Tamamlandı ✓';
+            return 'Aşıldı!';
+        }
+
+        // İlerleme yüzdesini getir
+        function getProgressWidth(consumed, target) {
+            if (target === 'SINIRSIZ') return 0;
+            const percentage = (consumed / target) * 100;
+            return Math.min(percentage, 100);
+        }
+
+        // İstatistikleri güncelle
+        function updateStats() {
+            let totalConsumed = 0;
+            let completedGroups = 0;
+            let totalTarget = 0;
+
+            for (const [groupName, group] of Object.entries(foodGroups)) {
+                const consumed = getConsumedCount(groupName);
+                totalConsumed += consumed;
+
+                if (group.target !== 'SINIRSIZ') {
+                    totalTarget += group.target;
+                    if (consumed >= group.target) {
+                        completedGroups++;
+                    }
+                }
+            }
+
+            const remainingPortions = Math.max(0, totalTarget - totalConsumed);
+            const progressPercent = totalTarget > 0 ? Math.round((totalConsumed / totalTarget) * 100) : 0;
+
+            document.getElementById('totalPortions').textContent = totalConsumed;
+            document.getElementById('completedGroups').textContent = completedGroups;
+            document.getElementById('remainingPortions').textContent = remainingPortions;
+            document.getElementById('progressPercent').textContent = progressPercent + '%';
+        }
+
+        // Bildiri göster
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Günlük sıfırlama
+        function resetDaily() {
+            if (confirm('Günlük takibinizi sıfırlamak istediğinizden emin misiniz?')) {
+                userData.consumed = {};
+                saveData();
+                renderFoodGroups();
+                updateStats();
+                showNotification('Günlük takip sıfırlandı!', 'success');
+            }
+        }
+
+        // Verileri localStorage'a kaydet
+        function saveData() {
+            localStorage.setItem('dietTrackerData', JSON.stringify(userData));
+        }
+
+        // Verileri localStorage'dan yükle
+        function loadData() {
+            const saved = localStorage.getItem('dietTrackerData');
+            if (saved) {
+                userData = JSON.parse(saved);
+            }
+        }
+    </script>
+</body>
+
+</html>
