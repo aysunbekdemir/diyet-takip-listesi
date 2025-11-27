@@ -481,6 +481,276 @@
             font-weight: 800;
         }
 
+        .date-selector {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: slideUp 0.8s ease 0.1s both;
+        }
+
+        .date-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .date-label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .current-date {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .date-nav-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .date-nav-btn.today {
+            background: var(--success);
+            padding: 0 15px;
+            width: auto;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .history-section {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        .history-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .history-header h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .history-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .history-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .history-table th:first-child {
+            border-radius: 10px 0 0 0;
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .history-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .history-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .history-table td:first-child {
+            text-align: left;
+            padding-left: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .history-table tbody tr:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .history-table tbody tr.today-row {
+            background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, transparent 100%);
+            font-weight: 600;
+        }
+
+        .progress-cell {
+            position: relative;
+        }
+
+        .progress-mini {
+            width: 100%;
+            height: 20px;
+            background: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-mini-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-mini-fill.complete {
+            background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .progress-mini-fill.partial {
+            background: linear-gradient(90deg, #FFB800 0%, #FFA000 100%);
+        }
+
+        .progress-mini-fill.exceed {
+            background: linear-gradient(90deg, #E74C3C 0%, #c0392b 100%);
+        }
+
+        .progress-mini-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+            z-index: 1;
+        }
+
+        .total-score {
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 5px 10px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .total-score.perfect {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .total-score.good {
+            background: linear-gradient(135deg, #FFB800 0%, #FFA000 100%);
+        }
+
+        .total-score.low {
+            background: linear-gradient(135deg, #E74C3C 0%, #c0392b 100%);
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .history-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .history-range-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .range-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .range-btn:hover,
+        .range-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
         .notification {
             position: fixed;
             top: 20px;
@@ -592,6 +862,18 @@
             <p class="subtitle">Günlük besin takibinizi kolaylaştırın</p>
         </header>
 
+        <div class="date-selector">
+            <div class="date-display">
+                <span class="date-label">Tarih:</span>
+                <span class="current-date" id="currentDate">Bugün</span>
+            </div>
+            <div class="date-nav">
+                <button class="date-nav-btn" onclick="changeDate(-1)">◄</button>
+                <button class="date-nav-btn today" onclick="goToToday()">Bugün</button>
+                <button class="date-nav-btn" onclick="changeDate(1)">►</button>
+            </div>
+        </div>
+
         <div class="stats-bar">
             <div class="stats-grid">
                 <div class="stat-item">
@@ -628,6 +910,28 @@
         </div>
 
         <button class="reset-button" onclick="resetDaily()">🔄 Günlük Sıfırla</button>
+
+        <div class="history-section">
+            <div class="history-header">
+                <h2>📅 GEÇMİŞ TAKİP</h2>
+                <p class="complex-foods-info">Son 30 günlük diyet takip geçmişiniz</p>
+            </div>
+            <div class="history-container">
+                <div class="history-controls">
+                    <div class="history-range-selector">
+                        <button class="range-btn active" onclick="changeHistoryRange(7)">7 Gün</button>
+                        <button class="range-btn" onclick="changeHistoryRange(14)">14 Gün</button>
+                        <button class="range-btn" onclick="changeHistoryRange(30)">30 Gün</button>
+                    </div>
+                    <button class="export-btn" onclick="exportHistory()">
+                        📊 Excel'e Aktar
+                    </button>
+                </div>
+                <div id="historyTableContainer">
+                    <!-- History table will be inserted here -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="notification" id="notification"></div>
@@ -1012,19 +1316,102 @@
             }
         };
 
+        // Mevcut tarih
+        let currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+        let viewingDate = currentDate; // Görüntülenen tarih
+        let historyDays = 7; // Varsayılan geçmiş görünüm
+
         // Kullanıcı verileri (localStorage'da saklanacak)
         let userData = {
-            consumed: {}, // Her grup için: { itemIndex: quantity }
-            complexFoodsConsumed: {} // { foodName: quantity }
+            history: {}, // Tarih bazlı veriler: { 'YYYY-MM-DD': { consumed: {}, complexFoodsConsumed: {} } }
+            currentData: { // Bugünkü veriler (geriye uyumluluk için)
+                consumed: {},
+                complexFoodsConsumed: {}
+            }
         };
 
         // Sayfa yüklendiğinde verileri yükle
         window.onload = function () {
             loadData();
+            updateDateDisplay();
             renderFoodGroups();
             renderComplexFoods();
             updateStats();
+            renderHistoryTable();
         };
+
+        // Tarihi Türkçe formatla
+        function formatDateTurkish(dateStr) {
+            const date = new Date(dateStr + 'T12:00:00');
+            const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+                'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+            const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} ${days[date.getDay()]}`;
+        }
+
+        // Tarih değiştir
+        function changeDate(direction) {
+            const date = new Date(viewingDate + 'T12:00:00');
+            date.setDate(date.getDate() + direction);
+            viewingDate = date.toISOString().split('T')[0];
+
+            // Gelecek tarihe izin verme
+            if (viewingDate > currentDate) {
+                viewingDate = currentDate;
+                showNotification('Gelecek tarihe gidemezsiniz!', 'warning');
+                return;
+            }
+
+            loadDataForDate();
+            updateDateDisplay();
+            renderFoodGroups();
+            renderComplexFoods();
+            updateStats();
+        }
+
+        // Bugüne git
+        function goToToday() {
+            viewingDate = currentDate;
+            loadDataForDate();
+            updateDateDisplay();
+            renderFoodGroups();
+            renderComplexFoods();
+            updateStats();
+        }
+
+        // Tarih göstergesini güncelle
+        function updateDateDisplay() {
+            const dateElement = document.getElementById('currentDate');
+            if (viewingDate === currentDate) {
+                dateElement.textContent = 'Bugün - ' + formatDateTurkish(viewingDate);
+            } else {
+                dateElement.textContent = formatDateTurkish(viewingDate);
+            }
+        }
+
+        // Belirli bir tarih için veri yükle
+        function loadDataForDate() {
+            if (userData.history[viewingDate]) {
+                userData.currentData = JSON.parse(JSON.stringify(userData.history[viewingDate]));
+            } else {
+                userData.currentData = {
+                    consumed: {},
+                    complexFoodsConsumed: {}
+                };
+            }
+        }
+
+        // Mevcut veriyi history'e kaydet
+        function saveCurrentToHistory() {
+            if (!userData.history) userData.history = {};
+            userData.history[viewingDate] = JSON.parse(JSON.stringify(userData.currentData));
+        }
+
+        // Tarih için veri al (read-only)
+        function getDataForDate(dateStr) {
+            return userData.history[dateStr] || { consumed: {}, complexFoodsConsumed: {} };
+        }
 
         // Besin gruplarını render et
         function renderFoodGroups() {
@@ -1093,21 +1480,27 @@
 
         // Besin miktarını getir
         function getItemQuantity(groupName, itemIndex) {
-            if (!userData.consumed[groupName]) return 0;
-            return userData.consumed[groupName][itemIndex] || 0;
+            if (!userData.currentData.consumed[groupName]) return 0;
+            return userData.currentData.consumed[groupName][itemIndex] || 0;
         }
 
         // Besin seçimini değiştir
         function toggleFood(groupName, itemIndex) {
-            if (!userData.consumed[groupName]) {
-                userData.consumed[groupName] = {};
+            if (viewingDate !== currentDate) {
+                showNotification('Geçmiş tarihleri düzenleyemezsiniz!', 'warning');
+                event.target.checked = !event.target.checked;
+                return;
             }
 
-            const currentQuantity = userData.consumed[groupName][itemIndex] || 0;
+            if (!userData.currentData.consumed[groupName]) {
+                userData.currentData.consumed[groupName] = {};
+            }
+
+            const currentQuantity = userData.currentData.consumed[groupName][itemIndex] || 0;
 
             if (currentQuantity > 0) {
                 // Seçimi kaldır
-                delete userData.consumed[groupName][itemIndex];
+                delete userData.currentData.consumed[groupName][itemIndex];
             } else {
                 // Yeni seçim yap, başlangıç miktarı 1
                 const group = foodGroups[groupName];
@@ -1120,28 +1513,35 @@
                     return;
                 }
 
-                userData.consumed[groupName][itemIndex] = 1;
+                userData.currentData.consumed[groupName][itemIndex] = 1;
             }
 
+            saveCurrentToHistory();
             saveData();
             renderFoodGroups();
             updateStats();
+            renderHistoryTable();
         }
 
         // Besin miktarını değiştir
         function changeQuantity(groupName, itemIndex, change) {
             event.stopPropagation(); // Checkbox'ın tetiklenmesini engelle
 
-            if (!userData.consumed[groupName]) {
-                userData.consumed[groupName] = {};
+            if (viewingDate !== currentDate) {
+                showNotification('Geçmiş tarihleri düzenleyemezsiniz!', 'warning');
+                return;
             }
 
-            const currentQuantity = userData.consumed[groupName][itemIndex] || 0;
+            if (!userData.currentData.consumed[groupName]) {
+                userData.currentData.consumed[groupName] = {};
+            }
+
+            const currentQuantity = userData.currentData.consumed[groupName][itemIndex] || 0;
             const newQuantity = currentQuantity + change;
 
             // Minimum 1, maksimum kontrol
             if (newQuantity < 1) {
-                delete userData.consumed[groupName][itemIndex];
+                delete userData.currentData.consumed[groupName][itemIndex];
                 // Checkbox'ı da kapat
                 const checkbox = event.target.closest('.food-item').querySelector('.food-checkbox');
                 if (checkbox) checkbox.checked = false;
@@ -1157,12 +1557,14 @@
                     }
                 }
 
-                userData.consumed[groupName][itemIndex] = newQuantity;
+                userData.currentData.consumed[groupName][itemIndex] = newQuantity;
             }
 
+            saveCurrentToHistory();
             saveData();
             renderFoodGroups();
             updateStats();
+            renderHistoryTable();
 
             // Grup tamamlandı mı kontrol et
             const newTotal = getNormalConsumedCount(groupName);
@@ -1298,15 +1700,21 @@
 
         // Komplike yiyecek seçimini değiştir
         function toggleComplexFood(foodName) {
-            if (!userData.complexFoodsConsumed) {
-                userData.complexFoodsConsumed = {};
+            if (viewingDate !== currentDate) {
+                showNotification('Geçmiş tarihleri düzenleyemezsiniz!', 'warning');
+                event.target.checked = !event.target.checked;
+                return;
             }
 
-            const currentQuantity = userData.complexFoodsConsumed[foodName] || 0;
+            if (!userData.currentData.complexFoodsConsumed) {
+                userData.currentData.complexFoodsConsumed = {};
+            }
+
+            const currentQuantity = userData.currentData.complexFoodsConsumed[foodName] || 0;
 
             if (currentQuantity > 0) {
                 // Seçimi kaldır
-                delete userData.complexFoodsConsumed[foodName];
+                delete userData.currentData.complexFoodsConsumed[foodName];
             } else {
                 // Yeni seçim yap, hedef kontrolü
                 const food = complexFoods[foodName];
@@ -1331,29 +1739,36 @@
                     return;
                 }
 
-                userData.complexFoodsConsumed[foodName] = 1;
+                userData.currentData.complexFoodsConsumed[foodName] = 1;
                 showNotification(`${foodName} eklendi!`, 'success');
             }
 
+            saveCurrentToHistory();
             saveData();
             renderComplexFoods();
             renderFoodGroups();
             updateStats();
+            renderHistoryTable();
         }
 
         // Komplike yiyecek miktarını değiştir
         function changeComplexQuantity(foodName, change) {
             event.stopPropagation();
 
-            if (!userData.complexFoodsConsumed) {
-                userData.complexFoodsConsumed = {};
+            if (viewingDate !== currentDate) {
+                showNotification('Geçmiş tarihleri düzenleyemezsiniz!', 'warning');
+                return;
             }
 
-            const currentQuantity = userData.complexFoodsConsumed[foodName] || 0;
+            if (!userData.currentData.complexFoodsConsumed) {
+                userData.currentData.complexFoodsConsumed = {};
+            }
+
+            const currentQuantity = userData.currentData.complexFoodsConsumed[foodName] || 0;
             const newQuantity = currentQuantity + change;
 
             if (newQuantity < 1) {
-                delete userData.complexFoodsConsumed[foodName];
+                delete userData.currentData.complexFoodsConsumed[foodName];
             } else {
                 const food = complexFoods[foodName];
                 let canAdd = true;
@@ -1381,13 +1796,15 @@
                     return;
                 }
 
-                userData.complexFoodsConsumed[foodName] = newQuantity;
+                userData.currentData.complexFoodsConsumed[foodName] = newQuantity;
             }
 
+            saveCurrentToHistory();
             saveData();
             renderComplexFoods();
             renderFoodGroups();
             updateStats();
+            renderHistoryTable();
         }
 
         // Komplike yiyecek seçili mi kontrol et
@@ -1421,9 +1838,9 @@
 
         // Tüketilen porsiyon sayısını getir (sadece normal besinler)
         function getNormalConsumedCount(groupName) {
-            if (!userData.consumed[groupName]) return 0;
+            if (!userData.currentData.consumed[groupName]) return 0;
             let total = 0;
-            for (const quantity of Object.values(userData.consumed[groupName])) {
+            for (const quantity of Object.values(userData.currentData.consumed[groupName])) {
                 total += quantity;
             }
             return total;
@@ -1449,27 +1866,259 @@
 
         // Günlük sıfırlama
         function resetDaily() {
-            if (confirm('Günlük takibinizi sıfırlamak istediğinizden emin misiniz?')) {
-                userData.consumed = {};
-                userData.complexFoodsConsumed = {};
+            if (viewingDate !== currentDate) {
+                showNotification('Sadece bugünü sıfırlayabilirsiniz!', 'warning');
+                return;
+            }
+
+            if (confirm('Bugünkü takibinizi sıfırlamak istediğinizden emin misiniz?')) {
+                userData.currentData = {
+                    consumed: {},
+                    complexFoodsConsumed: {}
+                };
+                saveCurrentToHistory();
                 saveData();
                 renderFoodGroups();
                 renderComplexFoods();
                 updateStats();
-                showNotification('Günlük takip sıfırlandı!', 'success');
+                renderHistoryTable();
+                showNotification('Bugünkü takip sıfırlandı!', 'success');
             }
+        }
+
+        // Geçmiş tablosunu render et
+        function renderHistoryTable() {
+            const container = document.getElementById('historyTableContainer');
+            if (!container) return;
+
+            // Son X günü al
+            const dates = [];
+            const today = new Date(currentDate + 'T12:00:00');
+            for (let i = historyDays - 1; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+
+            // Tablo oluştur
+            let tableHTML = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>🥛 Süt</th>
+                            <th>🥩 Et</th>
+                            <th>🍞 Ekmek</th>
+                            <th>🥬 Sebze</th>
+                            <th>🍎 Meyve</th>
+                            <th>🫒 Yağ</th>
+                            <th>🍯 Şeker</th>
+                            <th>Genel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            for (const dateStr of dates) {
+                const dayData = getDataForDate(dateStr);
+                const isToday = dateStr === currentDate;
+                const rowClass = isToday ? 'today-row' : '';
+
+                tableHTML += `<tr class="${rowClass}">`;
+                tableHTML += `<td>${formatDateShort(dateStr)}</td>`;
+
+                let totalScore = 0;
+                let totalGroups = 0;
+
+                // Her grup için hücre oluştur
+                for (const groupName of ['SÜT', 'ET', 'EKMEK', 'SEBZE', 'MEYVE', 'YAĞ', 'ŞEKER']) {
+                    const consumed = calculateGroupTotal(dayData, groupName);
+                    const target = foodGroups[groupName].target;
+
+                    if (target === 'SINIRSIZ') {
+                        tableHTML += `<td><div class="progress-mini"><div class="progress-mini-fill complete" style="width:100%"></div><span class="progress-mini-text">✓</span></div></td>`;
+                    } else {
+                        const percentage = Math.min((consumed / target) * 100, 100);
+                        const fillClass = consumed >= target ? 'complete' : consumed > 0 ? 'partial' : '';
+                        const displayText = `${consumed}/${target}`;
+
+                        tableHTML += `
+                            <td>
+                                <div class="progress-cell">
+                                    <div class="progress-mini">
+                                        <div class="progress-mini-fill ${fillClass}" style="width:${percentage}%"></div>
+                                        <span class="progress-mini-text">${displayText}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        `;
+
+                        if (consumed >= target) totalScore++;
+                        totalGroups++;
+                    }
+                }
+
+                // Genel skor
+                const scorePercentage = totalGroups > 0 ? Math.round((totalScore / totalGroups) * 100) : 0;
+                const scoreClass = scorePercentage >= 80 ? 'perfect' : scorePercentage >= 50 ? 'good' : 'low';
+                tableHTML += `<td><span class="total-score ${scoreClass}">${scorePercentage}%</span></td>`;
+
+                tableHTML += `</tr>`;
+            }
+
+            tableHTML += `</tbody></table>`;
+
+            if (dates.length === 0) {
+                tableHTML = '<div class="no-history">Henüz geçmiş veri bulunmamaktadır.</div>';
+            }
+
+            container.innerHTML = tableHTML;
+        }
+
+        // Grup toplamını hesapla (normal + komplike)
+        function calculateGroupTotal(dayData, groupName) {
+            let total = 0;
+
+            // Normal besinler
+            if (dayData.consumed && dayData.consumed[groupName]) {
+                for (const quantity of Object.values(dayData.consumed[groupName])) {
+                    total += quantity;
+                }
+            }
+
+            // Komplike yiyecekler
+            if (dayData.complexFoodsConsumed) {
+                for (const [foodName, quantity] of Object.entries(dayData.complexFoodsConsumed)) {
+                    const food = complexFoods[foodName];
+                    if (food && food.exchanges[groupName]) {
+                        total += food.exchanges[groupName] * quantity;
+                    }
+                }
+            }
+
+            return total;
+        }
+
+        // Kısa tarih formatı
+        function formatDateShort(dateStr) {
+            const date = new Date(dateStr + 'T12:00:00');
+            const months = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+                'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+
+            if (dateStr === currentDate) {
+                return `Bugün`;
+            }
+
+            return `${date.getDate()} ${months[date.getMonth()]}`;
+        }
+
+        // Geçmiş aralığını değiştir
+        function changeHistoryRange(days) {
+            historyDays = days;
+
+            // Buton stillerini güncelle
+            document.querySelectorAll('.range-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderHistoryTable();
+        }
+
+        // Geçmişi Excel'e aktar
+        function exportHistory() {
+            // CSV formatında veri oluştur
+            let csv = 'Tarih,Süt,Et,Ekmek,Sebze,Meyve,Yağ,Şeker,Toplam %\n';
+
+            const dates = [];
+            const today = new Date(currentDate + 'T12:00:00');
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+
+            for (const dateStr of dates) {
+                const dayData = getDataForDate(dateStr);
+                const row = [formatDateTurkish(dateStr)];
+
+                let totalScore = 0;
+                let totalGroups = 0;
+
+                for (const groupName of ['SÜT', 'ET', 'EKMEK', 'SEBZE', 'MEYVE', 'YAĞ', 'ŞEKER']) {
+                    const consumed = calculateGroupTotal(dayData, groupName);
+                    const target = foodGroups[groupName].target;
+
+                    if (target === 'SINIRSIZ') {
+                        row.push('Sınırsız');
+                    } else {
+                        row.push(`${consumed}/${target}`);
+                        if (consumed >= target) totalScore++;
+                        totalGroups++;
+                    }
+                }
+
+                const scorePercentage = totalGroups > 0 ? Math.round((totalScore / totalGroups) * 100) : 0;
+                row.push(`${scorePercentage}%`);
+
+                csv += row.join(',') + '\n';
+            }
+
+            // Download CSV
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `diyet_takip_${currentDate}.csv`;
+            link.click();
+
+            showNotification('Geçmiş başarıyla Excel formatında indirildi!', 'success');
         }
 
         // Verileri localStorage'a kaydet
         function saveData() {
-            localStorage.setItem('dietTrackerData', JSON.stringify(userData));
+            const dataToSave = {
+                history: userData.history,
+                version: 2 // Veri yapısı versiyonu
+            };
+            localStorage.setItem('dietTrackerData', JSON.stringify(dataToSave));
         }
 
         // Verileri localStorage'dan yükle
         function loadData() {
             const saved = localStorage.getItem('dietTrackerData');
             if (saved) {
-                userData = JSON.parse(saved);
+                const parsed = JSON.parse(saved);
+
+                // Eski veri yapısından yeni yapıya geçiş
+                if (!parsed.version || parsed.version < 2) {
+                    // Eski veriyi bugüne taşı
+                    userData.history = {};
+                    userData.history[currentDate] = {
+                        consumed: parsed.consumed || {},
+                        complexFoodsConsumed: parsed.complexFoodsConsumed || []
+                    };
+
+                    // Array'i object'e çevir (complex foods için)
+                    if (Array.isArray(userData.history[currentDate].complexFoodsConsumed)) {
+                        const newComplex = {};
+                        for (const foodName of userData.history[currentDate].complexFoodsConsumed) {
+                            newComplex[foodName] = 1;
+                        }
+                        userData.history[currentDate].complexFoodsConsumed = newComplex;
+                    }
+                } else {
+                    userData.history = parsed.history || {};
+                }
+
+                // Bugünkü veriyi yükle
+                loadDataForDate();
+            } else {
+                // İlk kullanım
+                userData.history = {};
+                userData.currentData = {
+                    consumed: {},
+                    complexFoodsConsumed: {}
+                };
             }
         }
     </script>
