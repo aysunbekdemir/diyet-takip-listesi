@@ -280,14 +280,12 @@
             margin-bottom: 10px;
             background: rgba(0, 0, 0, 0.02);
             border-radius: 12px;
-            cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
         }
 
         .food-item:hover {
             background: rgba(0, 0, 0, 0.05);
-            transform: translateX(5px);
         }
 
         .food-item.selected {
@@ -312,7 +310,52 @@
         .food-amount {
             color: #666;
             font-size: 0.9rem;
-            margin-left: 10px;
+            margin: 0 15px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .quantity-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--dark);
         }
 
         .reset-button {
@@ -333,6 +376,109 @@
         .reset-button:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-hover);
+        }
+
+        .complex-foods-section {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        .complex-foods-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .complex-foods-header h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .complex-foods-info {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+
+        .complex-foods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .complex-food-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 5px solid var(--primary);
+        }
+
+        .complex-food-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .complex-food-item.selected {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(247, 147, 30, 0.1) 100%);
+            border-left-color: var(--success);
+        }
+
+        .complex-food-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .complex-food-header-row .food-checkbox {
+            flex-shrink: 0;
+        }
+
+        .complex-food-name {
+            font-weight: 800;
+            color: var(--dark);
+            font-size: 1.1rem;
+            flex: 1;
+        }
+
+        .complex-food-portion {
+            color: #666;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .complex-food-exchanges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .exchange-badge {
+            background: linear-gradient(135deg, var(--badge-color) 0%, var(--badge-color-light) 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .exchange-count {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 6px;
+            border-radius: 5px;
+            font-weight: 800;
         }
 
         .notification {
@@ -469,6 +615,16 @@
 
         <div class="food-groups" id="foodGroups">
             <!-- Food groups will be dynamically inserted here -->
+        </div>
+
+        <div class="complex-foods-section">
+            <div class="complex-foods-header">
+                <h2>🍽️ KOMPLİKE YİYECEKLER</h2>
+                <p class="complex-foods-info">Bu yiyecekler birden fazla besin grubundan değişim içerir</p>
+            </div>
+            <div class="complex-foods-grid" id="complexFoods">
+                <!-- Complex foods will be dynamically inserted here -->
+            </div>
         </div>
 
         <button class="reset-button" onclick="resetDaily()">🔄 Günlük Sıfırla</button>
@@ -704,15 +860,169 @@
             }
         };
 
+        // Komplike yiyecekler listesi (birden fazla gruptan değişim içerir)
+        const complexFoods = {
+            'İmambayıldı (çiğden)': {
+                portion: '1 adet',
+                exchanges: { 'SEBZE': 1, 'YAĞ': 2 }
+            },
+            'Karnıyarık (çiğden)': {
+                portion: '1 adet',
+                exchanges: { 'SEBZE': 1, 'YAĞ': 1, 'ET': 2 }
+            },
+            'Etli kabak dolma': {
+                portion: '1 adet kabaktan',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 1, 'ET': 1, 'YAĞ': 1 }
+            },
+            'Etli biber dolma': {
+                portion: '2 adet',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 1, 'ET': 1, 'YAĞ': 1 }
+            },
+            'Etli yaprak sarma': {
+                portion: '8 adet',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 2, 'ET': 1, 'YAĞ': 1 }
+            },
+            'Etli lahana sarma': {
+                portion: '4 adet',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 1, 'ET': 1, 'YAĞ': 1 }
+            },
+            'Zeytinyağlı biber dolma': {
+                portion: '2 adet',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 2, 'YAĞ': 2 }
+            },
+            'Zeytinyağlı lahana sarması': {
+                portion: '4 adet',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 1, 'YAĞ': 2 }
+            },
+            'Zeytinyağlı yaprak sarma': {
+                portion: '8 adet',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 2, 'YAĞ': 2 }
+            },
+            'Mercimek köftesi': {
+                portion: '2 adet',
+                exchanges: { 'EKMEK': 1, 'YAĞ': 1 }
+            },
+            'Peynirli tepsi böreği': {
+                portion: '1 dilim / 2 parmak',
+                exchanges: { 'EKMEK': 2, 'ET': 1, 'YAĞ': 1 }
+            },
+            'Gözleme (yarım yufkadan)': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 4, 'ET': 2, 'YAĞ': 2 }
+            },
+            'Cheeseburger': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 3, 'ET': 3, 'YAĞ': 1 }
+            },
+            'Hamburger (mayonezsiz) küçük': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 2, 'ET': 2 }
+            },
+            'Hamburger (mayonezsiz) orta': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 3, 'ET': 3 }
+            },
+            'Pizza (karışık)': {
+                portion: '1 küçük boy',
+                exchanges: { 'ET': 3, 'EKMEK': 5, 'YAĞ': 2 }
+            },
+            'Lahmacun': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 3, 'ET': 2, 'YAĞ': 2 }
+            },
+            'Kıymalı pide': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 4, 'ET': 2, 'YAĞ': 2 }
+            },
+            'Mantı (yoğurtsuz)': {
+                portion: '1 küçük kepçe',
+                exchanges: { 'ET': 1, 'EKMEK': 2, 'YAĞ': 1 }
+            },
+            'Patates salatası (soğuk)': {
+                portion: '5-6 yemek kaşığı',
+                exchanges: { 'EKMEK': 1, 'YAĞ': 1 }
+            },
+            'Kısır': {
+                portion: '2-3 yemek kaşığı',
+                exchanges: { 'EKMEK': 1, 'YAĞ': 1 }
+            },
+            'Krep': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 1, 'YAĞ': 1 }
+            },
+            'Poğaça (sade)': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 3, 'YAĞ': 2 }
+            },
+            'Kadınbudu köfte': {
+                portion: '2 adet',
+                exchanges: { 'ET': 1, 'EKMEK': 1, 'YAĞ': 4 }
+            },
+            'İçli köfte (haşlanmış)': {
+                portion: '1 adet',
+                exchanges: { 'ET': 2, 'EKMEK': 1, 'YAĞ': 2 }
+            },
+            'Sakızlı muhallebi': {
+                portion: '1 kase',
+                exchanges: { 'SÜT': 1, 'EKMEK': 1, 'MEYVE': 1 }
+            },
+            'Madlen çikolata': {
+                portion: '2 adet',
+                exchanges: { 'MEYVE': 1, 'YAĞ': 1 }
+            },
+            'Yaş pasta (meyveli)': {
+                portion: '1 ince dilim',
+                exchanges: { 'EKMEK': 2, 'MEYVE': 2, 'YAĞ': 3 }
+            },
+            'Yaş pasta (çikolatalı)': {
+                portion: '1 ince dilim',
+                exchanges: { 'EKMEK': 2, 'ŞEKER': 2, 'YAĞ': 1 }
+            },
+            'Kek (sade)': {
+                portion: '1 dilim',
+                exchanges: { 'EKMEK': 2, 'MEYVE': 1, 'YAĞ': 1 }
+            },
+            'Sütlaç': {
+                portion: '1 kase',
+                exchanges: { 'SÜT': 1, 'EKMEK': 1, 'MEYVE': 1 }
+            },
+            'Cacık': {
+                portion: '1 kase',
+                exchanges: { 'SÜT': 1 }
+            },
+            'Aşure': {
+                portion: '1 kase',
+                exchanges: { 'EKMEK': 1, 'MEYVE': 2, 'YAĞ': 1, 'ET': 1 }
+            },
+            'Kaşarlı tost (yağsız)': {
+                portion: '1 adet',
+                exchanges: { 'EKMEK': 2, 'ET': 2 }
+            },
+            'Kıymalı-Pirinçli sebze yemeği': {
+                portion: '2 kepçe',
+                exchanges: { 'SEBZE': 1, 'EKMEK': 1, 'ET': 1 }
+            },
+            'Kurubaklagil yemeği': {
+                portion: '2 kepçe',
+                exchanges: { 'ET': 1, 'EKMEK': 1, 'YAĞ': 1 }
+            },
+            'Sebze yemeği': {
+                portion: '2 kepçe',
+                exchanges: { 'YAĞ': 1 }
+            }
+        };
+
         // Kullanıcı verileri (localStorage'da saklanacak)
         let userData = {
-            consumed: {}
+            consumed: {}, // Her grup için: { itemIndex: quantity }
+            complexFoodsConsumed: {} // { foodName: quantity }
         };
 
         // Sayfa yüklendiğinde verileri yükle
         window.onload = function () {
             loadData();
             renderFoodGroups();
+            renderComplexFoods();
             updateStats();
         };
 
@@ -730,10 +1040,16 @@
                 groupDiv.style.setProperty('--group-color-light', group.colorLight);
 
                 const consumed = getConsumedCount(groupName);
+                const complexConsumed = getComplexGroupCount(groupName);
                 const target = group.target === 'SINIRSIZ' ? '∞' : group.target;
                 const statusClass = getStatusClass(consumed, group.target);
                 const statusText = getStatusText(consumed, group.target);
                 const progressWidth = getProgressWidth(consumed, group.target);
+
+                let portionText = `${consumed} / ${target}`;
+                if (complexConsumed > 0) {
+                    portionText += ` <span style="font-size: 0.8rem; opacity: 0.8;">(${complexConsumed} komplike)</span>`;
+                }
 
                 groupDiv.innerHTML = `
                     <div class="group-header">
@@ -743,22 +1059,30 @@
                     </div>
                     <div class="portion-info">
                         <span class="portion-text">Hedef Porsiyon</span>
-                        <span class="portion-count">${consumed} / ${target}</span>
+                        <span class="portion-count">${portionText}</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progressWidth}%"></div>
                     </div>
                     <div class="food-items">
-                        ${group.items.map((item, index) => `
-                            <div class="food-item ${isItemSelected(groupName, index) ? 'selected' : ''}">
+                        ${group.items.map((item, index) => {
+                    const quantity = getItemQuantity(groupName, index);
+                    const isSelected = quantity > 0;
+                    return `
+                            <div class="food-item ${isSelected ? 'selected' : ''}">
                                 <input type="checkbox" 
                                     class="food-checkbox" 
-                                    ${isItemSelected(groupName, index) ? 'checked' : ''}
+                                    ${isSelected ? 'checked' : ''}
                                     onchange="toggleFood('${groupName}', ${index})">
                                 <span class="food-name">${item.name}</span>
                                 <span class="food-amount">${item.amount}</span>
+                                <div class="quantity-selector" style="${isSelected ? '' : 'display:none'}">
+                                    <button class="quantity-btn" onclick="changeQuantity('${groupName}', ${index}, -1)">-</button>
+                                    <span class="quantity-value">${quantity}</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('${groupName}', ${index}, 1)">+</button>
+                                </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 `;
 
@@ -767,25 +1091,73 @@
             }
         }
 
+        // Besin miktarını getir
+        function getItemQuantity(groupName, itemIndex) {
+            if (!userData.consumed[groupName]) return 0;
+            return userData.consumed[groupName][itemIndex] || 0;
+        }
+
         // Besin seçimini değiştir
         function toggleFood(groupName, itemIndex) {
             if (!userData.consumed[groupName]) {
-                userData.consumed[groupName] = [];
+                userData.consumed[groupName] = {};
             }
 
-            const index = userData.consumed[groupName].indexOf(itemIndex);
-            if (index > -1) {
-                userData.consumed[groupName].splice(index, 1);
-            } else {
-                const group = foodGroups[groupName];
-                const consumed = getConsumedCount(groupName);
+            const currentQuantity = userData.consumed[groupName][itemIndex] || 0;
 
-                // SEBZE grubu sınırsız, diğerleri için kontrol et
-                if (group.target !== 'SINIRSIZ' && consumed >= group.target) {
+            if (currentQuantity > 0) {
+                // Seçimi kaldır
+                delete userData.consumed[groupName][itemIndex];
+            } else {
+                // Yeni seçim yap, başlangıç miktarı 1
+                const group = foodGroups[groupName];
+                const currentTotal = getNormalConsumedCount(groupName);
+
+                if (group.target !== 'SINIRSIZ' && currentTotal >= group.target) {
                     showNotification(`${groupName} grubunda hedef porsiyonu doldurdunuz!`, 'warning');
+                    // Checkbox'ı geri kapat
+                    event.target.checked = false;
+                    return;
                 }
 
-                userData.consumed[groupName].push(itemIndex);
+                userData.consumed[groupName][itemIndex] = 1;
+            }
+
+            saveData();
+            renderFoodGroups();
+            updateStats();
+        }
+
+        // Besin miktarını değiştir
+        function changeQuantity(groupName, itemIndex, change) {
+            event.stopPropagation(); // Checkbox'ın tetiklenmesini engelle
+
+            if (!userData.consumed[groupName]) {
+                userData.consumed[groupName] = {};
+            }
+
+            const currentQuantity = userData.consumed[groupName][itemIndex] || 0;
+            const newQuantity = currentQuantity + change;
+
+            // Minimum 1, maksimum kontrol
+            if (newQuantity < 1) {
+                delete userData.consumed[groupName][itemIndex];
+                // Checkbox'ı da kapat
+                const checkbox = event.target.closest('.food-item').querySelector('.food-checkbox');
+                if (checkbox) checkbox.checked = false;
+            } else {
+                const group = foodGroups[groupName];
+                if (group.target !== 'SINIRSIZ') {
+                    const currentTotal = getNormalConsumedCount(groupName);
+                    const otherItemsTotal = currentTotal - currentQuantity;
+
+                    if (otherItemsTotal + newQuantity > group.target) {
+                        showNotification(`${groupName} grubunda hedef porsiyonu aşamazsınız!`, 'warning');
+                        return;
+                    }
+                }
+
+                userData.consumed[groupName][itemIndex] = newQuantity;
             }
 
             saveData();
@@ -793,9 +1165,9 @@
             updateStats();
 
             // Grup tamamlandı mı kontrol et
-            const newConsumed = getConsumedCount(groupName);
+            const newTotal = getNormalConsumedCount(groupName);
             const group = foodGroups[groupName];
-            if (group.target !== 'SINIRSIZ' && newConsumed === group.target) {
+            if (group.target !== 'SINIRSIZ' && newTotal === group.target) {
                 showNotification(`Tebrikler! ${groupName} grubunu tamamladınız! 🎉`, 'success');
             }
         }
@@ -805,10 +1177,6 @@
             return userData.consumed[groupName] ? userData.consumed[groupName].length : 0;
         }
 
-        // Seçili mi kontrol et
-        function isItemSelected(groupName, itemIndex) {
-            return userData.consumed[groupName] && userData.consumed[groupName].includes(itemIndex);
-        }
 
         // Durum sınıfını getir
         function getStatusClass(consumed, target) {
@@ -841,6 +1209,7 @@
             let completedGroups = 0;
             let totalTarget = 0;
 
+            // Normal besinleri say
             for (const [groupName, group] of Object.entries(foodGroups)) {
                 const consumed = getConsumedCount(groupName);
                 totalConsumed += consumed;
@@ -853,6 +1222,14 @@
                 }
             }
 
+            // Komplike yiyecekleri ekle
+            const complexConsumed = getComplexFoodsImpact();
+            for (const [groupName, count] of Object.entries(complexConsumed)) {
+                if (foodGroups[groupName] && foodGroups[groupName].target !== 'SINIRSIZ') {
+                    totalConsumed += count;
+                }
+            }
+
             const remainingPortions = Math.max(0, totalTarget - totalConsumed);
             const progressPercent = totalTarget > 0 ? Math.round((totalConsumed / totalTarget) * 100) : 0;
 
@@ -860,6 +1237,203 @@
             document.getElementById('completedGroups').textContent = completedGroups;
             document.getElementById('remainingPortions').textContent = remainingPortions;
             document.getElementById('progressPercent').textContent = progressPercent + '%';
+        }
+
+        // Komplike yiyecekleri render et
+        function renderComplexFoods() {
+            const container = document.getElementById('complexFoods');
+            container.innerHTML = '';
+
+            for (const [foodName, foodData] of Object.entries(complexFoods)) {
+                const quantity = getComplexFoodQuantity(foodName);
+                const isSelected = quantity > 0;
+
+                const foodDiv = document.createElement('div');
+                foodDiv.className = `complex-food-item ${isSelected ? 'selected' : ''}`;
+
+                // Değişim badge'lerini oluştur
+                let exchangeBadges = '';
+                for (const [groupName, count] of Object.entries(foodData.exchanges)) {
+                    const group = foodGroups[groupName];
+                    if (group) {
+                        const totalCount = count * (quantity || 1);
+                        exchangeBadges += `
+                            <span class="exchange-badge" style="--badge-color: ${group.color}; --badge-color-light: ${group.colorLight}">
+                                ${group.icon} ${groupName}
+                                <span class="exchange-count">${quantity > 1 ? `${count}×${quantity}=${totalCount}` : count}</span>
+                            </span>
+                        `;
+                    }
+                }
+
+                foodDiv.innerHTML = `
+                    <div class="complex-food-header-row">
+                        <input type="checkbox" 
+                            class="food-checkbox" 
+                            ${isSelected ? 'checked' : ''}
+                            onchange="toggleComplexFood('${foodName.replace(/'/g, "\\'")}')">
+                        <span class="complex-food-name">${foodName}</span>
+                        <span class="complex-food-portion">${foodData.portion}</span>
+                    </div>
+                    <div class="complex-food-exchanges">
+                        ${exchangeBadges}
+                    </div>
+                    ${isSelected ? `
+                        <div class="quantity-selector" style="margin-top: 10px;">
+                            <button class="quantity-btn" onclick="changeComplexQuantity('${foodName.replace(/'/g, "\\'")}', -1)">-</button>
+                            <span class="quantity-value">${quantity}</span>
+                            <button class="quantity-btn" onclick="changeComplexQuantity('${foodName.replace(/'/g, "\\'")}', 1)">+</button>
+                        </div>
+                    ` : ''}
+                `;
+
+                container.appendChild(foodDiv);
+            }
+        }
+
+        // Komplike yiyecek miktarını getir
+        function getComplexFoodQuantity(foodName) {
+            return userData.complexFoodsConsumed[foodName] || 0;
+        }
+
+        // Komplike yiyecek seçimini değiştir
+        function toggleComplexFood(foodName) {
+            if (!userData.complexFoodsConsumed) {
+                userData.complexFoodsConsumed = {};
+            }
+
+            const currentQuantity = userData.complexFoodsConsumed[foodName] || 0;
+
+            if (currentQuantity > 0) {
+                // Seçimi kaldır
+                delete userData.complexFoodsConsumed[foodName];
+            } else {
+                // Yeni seçim yap, hedef kontrolü
+                const food = complexFoods[foodName];
+                let canAdd = true;
+                let warningMessage = '';
+
+                for (const [groupName, count] of Object.entries(food.exchanges)) {
+                    const group = foodGroups[groupName];
+                    if (group && group.target !== 'SINIRSIZ') {
+                        const currentTotal = getConsumedCount(groupName);
+                        if (currentTotal + count > group.target) {
+                            canAdd = false;
+                            warningMessage = `Bu yiyecek ${groupName} grubunda hedefi aşmanıza neden olacak!`;
+                            break;
+                        }
+                    }
+                }
+
+                if (!canAdd) {
+                    showNotification(warningMessage, 'error');
+                    event.target.checked = false;
+                    return;
+                }
+
+                userData.complexFoodsConsumed[foodName] = 1;
+                showNotification(`${foodName} eklendi!`, 'success');
+            }
+
+            saveData();
+            renderComplexFoods();
+            renderFoodGroups();
+            updateStats();
+        }
+
+        // Komplike yiyecek miktarını değiştir
+        function changeComplexQuantity(foodName, change) {
+            event.stopPropagation();
+
+            if (!userData.complexFoodsConsumed) {
+                userData.complexFoodsConsumed = {};
+            }
+
+            const currentQuantity = userData.complexFoodsConsumed[foodName] || 0;
+            const newQuantity = currentQuantity + change;
+
+            if (newQuantity < 1) {
+                delete userData.complexFoodsConsumed[foodName];
+            } else {
+                const food = complexFoods[foodName];
+                let canAdd = true;
+                let warningMessage = '';
+
+                // Her grup için kontrol
+                for (const [groupName, countPerPortion] of Object.entries(food.exchanges)) {
+                    const group = foodGroups[groupName];
+                    if (group && group.target !== 'SINIRSIZ') {
+                        const currentTotal = getConsumedCount(groupName);
+                        const currentFromThisFood = currentQuantity * countPerPortion;
+                        const newFromThisFood = newQuantity * countPerPortion;
+                        const otherFoodsTotal = currentTotal - currentFromThisFood;
+
+                        if (otherFoodsTotal + newFromThisFood > group.target) {
+                            canAdd = false;
+                            warningMessage = `Bu miktar ${groupName} grubunda hedefi aşmanıza neden olacak!`;
+                            break;
+                        }
+                    }
+                }
+
+                if (!canAdd) {
+                    showNotification(warningMessage, 'error');
+                    return;
+                }
+
+                userData.complexFoodsConsumed[foodName] = newQuantity;
+            }
+
+            saveData();
+            renderComplexFoods();
+            renderFoodGroups();
+            updateStats();
+        }
+
+        // Komplike yiyecek seçili mi kontrol et
+        function isComplexFoodSelected(foodName) {
+            return userData.complexFoodsConsumed && userData.complexFoodsConsumed[foodName] > 0;
+        }
+
+        // Komplike yiyeceklerin grup etkisini hesapla
+        function getComplexFoodsImpact() {
+            const impact = {};
+
+            if (userData.complexFoodsConsumed) {
+                for (const [foodName, quantity] of Object.entries(userData.complexFoodsConsumed)) {
+                    const food = complexFoods[foodName];
+                    if (food) {
+                        for (const [groupName, count] of Object.entries(food.exchanges)) {
+                            impact[groupName] = (impact[groupName] || 0) + (count * quantity);
+                        }
+                    }
+                }
+            }
+
+            return impact;
+        }
+
+        // Belirli bir grup için komplike yiyeceklerden gelen sayı
+        function getComplexGroupCount(groupName) {
+            const impact = getComplexFoodsImpact();
+            return impact[groupName] || 0;
+        }
+
+        // Tüketilen porsiyon sayısını getir (sadece normal besinler)
+        function getNormalConsumedCount(groupName) {
+            if (!userData.consumed[groupName]) return 0;
+            let total = 0;
+            for (const quantity of Object.values(userData.consumed[groupName])) {
+                total += quantity;
+            }
+            return total;
+        }
+
+        // Tüketilen porsiyon sayısını getir (komplike yiyecekler dahil)
+        function getConsumedCount(groupName) {
+            const normalCount = getNormalConsumedCount(groupName);
+            const complexCount = getComplexGroupCount(groupName);
+            return normalCount + complexCount;
         }
 
         // Bildiri göster
@@ -877,8 +1451,10 @@
         function resetDaily() {
             if (confirm('Günlük takibinizi sıfırlamak istediğinizden emin misiniz?')) {
                 userData.consumed = {};
+                userData.complexFoodsConsumed = {};
                 saveData();
                 renderFoodGroups();
+                renderComplexFoods();
                 updateStats();
                 showNotification('Günlük takip sıfırlandı!', 'success');
             }
